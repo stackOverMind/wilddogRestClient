@@ -9,7 +9,7 @@ const WilddogRest = function (url) {
   this.path = _url.pathname;
   this.query = querystring.parse(_url.query);
 };
-
+exports.default = WilddogRest;
 WilddogRest.prototype.auth = function (token) {
   this.authToken = token;
   this.query || {};
@@ -270,15 +270,3 @@ ServerEvent.prototype._parseData = function (linebuf) {
     this.path = data.path;
   }
 }
-/*
-new WilddogRest('https://test123.wilddogio.com/.json').isShallow(true).get(function (data) {
-  console.log(data);
-})
-
-new WilddogRest('https://test123.wilddogio.com/.json').isShallow(true).stream(function (d) { console.log(d) }, function (err) {
-  console.log(err);
-});
-*/
-new WilddogRest('https://test123.wilddogio.com/a/b.json').put({ abc: 'werwe' }, function (err) {
-  console.log(err);
-})

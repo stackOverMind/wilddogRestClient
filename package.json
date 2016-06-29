@@ -1,6 +1,6 @@
 {
-  "name": "wilddog-rest-node",
-  "version": "0.0.1",
+  "name": "wilddog-rest-client",
+  "version": "0.0.3",
   "description": "野狗Rest客户端 for nodejs",
   "main": "index.js",
   "scripts": {
