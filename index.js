@@ -9,7 +9,7 @@ const WilddogRest = function (url) {
   this.path = _url.pathname;
   this.query = querystring.parse(_url.query);
 };
-exports.default = WilddogRest;
+module.exports = WilddogRest;
 WilddogRest.prototype.auth = function (token) {
   this.authToken = token;
   this.query || {};
