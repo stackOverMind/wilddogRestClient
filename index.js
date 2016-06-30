@@ -53,7 +53,7 @@ WilddogRest.prototype.get = function (callback, cancelCallack) {
   var options = {
     hostname: this.hostname,
     port: 443,
-    path: this.path,
+    path: this.path + '.json',
   };
   if (this.query != null) {
     options.path += '?' + querystring.stringify(this.query);
@@ -92,7 +92,7 @@ WilddogRest.prototype.put = function (data, callback) {
   var options = {
     hostname: this.hostname,
     port: 443,
-    path: this.path,
+    path: this.path + '.json',
     method: 'PUT',
     headers: {
       'Content-Type': 'text/json',
@@ -117,7 +117,7 @@ WilddogRest.prototype.post = function (data, callback) {
   var options = {
     hostname: this.hostname,
     port: 443,
-    path: this.path,
+    path: this.path + '.json',
     method: 'POST',
     headers: {
       'Content-Type': 'text/json',
@@ -147,7 +147,7 @@ WilddogRest.prototype.patch = function (data, callback) {
   var options = {
     hostname: this.hostname,
     port: 443,
-    path: this.path,
+    path: this.path + '.json',
     method: 'PATCH',
     headers: {
       'Content-Type': 'text/json',
@@ -172,7 +172,7 @@ WilddogRest.prototype.delete = function (data, callback) {
   var options = {
     hostname: this.hostname,
     port: 443,
-    path: this.path,
+    path: this.path + '.json',
     method: 'DELETE',
     headers: {
       'Content-Type': 'text/json',
@@ -194,11 +194,10 @@ WilddogRest.prototype.delete = function (data, callback) {
 };
 
 WilddogRest.prototype.stream = function (dataCallback, cancelCallback) {
-
   var options = {
     hostname: this.hostname,
     port: 443,
-    path: this.path,
+    path: this.path + '.json',
     method: 'GET',
     headers: {
       'accept': 'text/event-stream',
