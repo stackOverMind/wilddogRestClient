@@ -212,7 +212,7 @@ WilddogRest.prototype.stream = function (dataCallback, cancelCallback) {
     self.tick = setTimeout(function () {
       cancelCallback(new Error('disconnected'));
       clearTimeout(self.tick);
-    }, 20000);
+    }, 60000);
     var buffers = [];
     res.on('data', function (d) {
       var idx = d.indexOf(new Buffer('\n\n'));
@@ -222,8 +222,9 @@ WilddogRest.prototype.stream = function (dataCallback, cancelCallback) {
       else {
         buffers.push(d.slice(0, idx));
         var buf = Buffer.concat(buffers);
-        var event = new ServerEvent(buf);
-        if (event.type == 'put' || event.type == 'patch') {
+
+        var event = new ServerEvent(buf, self.path);
+        if (event.type == 'put' || event.type == 'patch' ) {
           dataCallback(event);
         }
         else if (event.type == 'keep-alive') {
@@ -231,7 +232,7 @@ WilddogRest.prototype.stream = function (dataCallback, cancelCallback) {
           self.tick = setTimeout(function () {
             cancelCallback(new Error('disconnected'));
             clearTimeout(self.tick);
-          }, 20000);
+          }, 60000);
         }
         buffers = [];
       }
@@ -246,14 +247,14 @@ WilddogRest.prototype.stream = function (dataCallback, cancelCallback) {
       cancelCallback(e);
   });
   req.end();
-
 }
 
-function ServerEvent(buffer) {
+function ServerEvent(buffer, basePath) {
   var dataIdx = buffer.indexOf('\n') + 1;
   if (buffer.indexOf(new Buffer('event:')) == 0) {
     var ev = buffer.slice(6, dataIdx - 1).toString();
     this.type = ev;
+    this.basePath = basePath;
     this._parseData(buffer.slice(dataIdx, buffer.length));
   }
 }
@@ -267,5 +268,40 @@ ServerEvent.prototype._parseData = function (linebuf) {
   if (data != null) {
     this.data = data.data;
     this.path = data.path;
+    this.key = getKey(this.path, this.basePath);
   }
+}
+function getKey(url, baseUrl) {
+  function _getKey(url) {
+    return url.split('/')[1]
+  }
+  if (url == null || url.length < 1 || url == '/') {
+    return null;
+  }
+  if (url[0] != '/') {
+    url = '/' + url;
+  }
+  if (url[url.length - 1] == '/') {
+    url = url.substr(0, url.length - 1);
+  }
+  if (baseUrl == '/' || baseUrl == null || baseUrl == '') {
+    return _getKey(url);
+  }
+  if (baseUrl[0] != '/') {
+    baseUrl = '/' + baseUrl;
+  }
+  if (baseUrl[baseUrl.length - 1] == '/') {
+    baseUrl = baseUrl.substr(0, url.length - 1);
+  }
+  if (url.indexOf(baseUrl) != 0) {
+    return null;
+  }
+  var subUrl = url.substr(baseUrl.length)
+  return _getKey(subUrl);
+}
+function isLeaf(key, url) {
+  if (url[url.length - 1] == '/') {
+    url = url.substr(0, url.lenth - 1);
+  }
+  return url.indexOf(key) == url.length - key.length
 }
